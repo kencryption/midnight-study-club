@@ -10,7 +10,7 @@ const Navbar = () => {
         {/* Logo */}
         <img
           src={assets.logo}
-          className="logo-glow w-32 sm:w-40 object-contain"
+          className="logo-glow w-20 sm:w-28 object-contain"
           alt="Midnight Study Club"
         />
 
