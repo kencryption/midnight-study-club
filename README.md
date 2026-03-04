@@ -13,4 +13,4 @@ The Midnight Study Club is a collaborative platform where students share resourc
 - React
 - Vite
 - JavaScript
-- CSS
+- Tailwind CSS

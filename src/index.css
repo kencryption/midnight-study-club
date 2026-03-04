@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Roboto+Mono:wght@300;400;500&family=Rubik+Mono+One&family=Space+Grotesk:wght@300;400;500;600&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+  --color-background: #1A1A1B;
+  --color-text: #F2F2F2;
+  --color-accent: #FF448E;
+
+  --font-heading: "Rubik Mono One", sans-serif;
+  --font-ui: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "Roboto Mono", monospace;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+}
