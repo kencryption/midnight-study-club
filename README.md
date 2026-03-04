@@ -1,6 +1,6 @@
 # The Midnight Study Club
 
-The Midnight Study Club is a collaborative platform where students share notes, resources, and course material to survive exams together.
+The Midnight Study Club is a collaborative platform where students share resources and survive finals together.
 
 ## Features
 
