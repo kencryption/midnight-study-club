@@ -3,16 +3,65 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #1A1A1B;
-  --color-text: #F2F2F2;
-  --color-accent: #FF448E;
+  --color-background: #080809;
+  --color-surface: #121214;
+  --color-surface-hover: #1c1c1f;
+
+  --color-text: #ffffff;
+  --color-text-secondary: #9ea1a6;
+  --color-text-muted: #626469;
+
+  --color-accent: #ff2e88;
+  --color-accent-glow: rgba(255, 46, 136, 0.4);
 
   --font-heading: "Rubik Mono One", sans-serif;
   --font-ui: "Space Grotesk", sans-serif;
   --font-body: "Inter", sans-serif;
-  --font-mono: "Roboto Mono", monospace;
 }
 
 body {
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+@layer components {
+
+  .logo-glow {
+    filter:
+      drop-shadow(0 0 6px var(--color-accent-glow))
+      drop-shadow(0 0 12px var(--color-accent-glow));
+    transition: filter 0.3s ease-in-out;
+    animation: flicker 3s infinite;
+  }
+
+  .logo-glow:hover {
+    filter:
+      drop-shadow(0 0 10px var(--color-accent))
+      drop-shadow(0 0 20px var(--color-accent));
+  }
+
+  .nav-link {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--color-accent);
+  }
+
+}
+
+/* Neon flicker animation */
+@keyframes flicker {
+  0%, 18%, 22%, 25%, 53%, 57%, 100% {
+    filter:
+      drop-shadow(0 0 6px var(--color-accent-glow))
+      drop-shadow(0 0 12px var(--color-accent-glow));
+  }
+
+  20%, 24%, 55% {
+    filter:
+      drop-shadow(0 0 2px var(--color-accent-glow));
+  }
 }
