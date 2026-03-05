@@ -6,7 +6,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center px-4 sm:px-12 lg:px-24 xl:px-40 py-4 sticky top-0 z-20 backdrop-blur-xl font-ui bg-background text-text border-b border-accent">
+      <div className="flex justify-between items-center px-4 sm:px-12 lg:px-24 xl:px-40 py-4 font-ui bg-background text-text border-b border-accent">
         {/* Logo */}
         <img
           src={assets.logo}
@@ -33,7 +33,7 @@ const Navbar = () => {
         {/* Upload Button */}
         <a
           href="#upload"
-          className="text-sm hidden sm:flex items-center gap-2 bg-accent text-white font-ui px-6 py-2 rounded-full cursor-pointer hover:scale-105 hover:shadow-[0_0_12px_var(--color-accent-glow)] transition-all duration-200"
+          className="btn-primary btn-navbar max-sm:hidden"
         >
           Upload
         </a>
