@@ -28,7 +28,7 @@ const UploadModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 
       {/* Overlay */}
       <div
@@ -37,15 +37,15 @@ const UploadModal = ({ isOpen, onClose }) => {
       />
 
       {/* Modal */}
-      <div className="relative z-10 bg-surface p-10 rounded-xl w-[500px] max-w-[90%] text-center shadow-xl">
+      <div className="relative z-10 w-full max-w-md bg-surface rounded-xl p-6 sm:p-8 text-center shadow-xl max-h-[90vh] overflow-y-auto">
 
-        <h2 className="font-heading text-2xl mb-6">
+        <h2 className="font-heading text-xl sm:text-2xl mb-6">
           Upload Resources
         </h2>
 
         {/* Drop Area */}
         <div
-          className={`border-2 border-dashed rounded-lg p-12 cursor-pointer transition ${
+          className={`border-2 border-dashed rounded-lg p-8 sm:p-12 cursor-pointer transition ${
             dragging ? "border-accent bg-surface-hover" : "border-text-muted"
           }`}
           onClick={() => fileInputRef.current.click()}
@@ -56,11 +56,11 @@ const UploadModal = ({ isOpen, onClose }) => {
           onDragLeave={() => setDragging(false)}
           onDrop={handleDrop}
         >
-          <p className="text-text-secondary">
+          <p className="text-text-secondary text-sm sm:text-base">
             Drag & drop files here
           </p>
 
-          <p className="text-text-muted text-sm mt-2">
+          <p className="text-text-muted text-xs sm:text-sm mt-2">
             or click to browse
           </p>
 
@@ -86,7 +86,7 @@ const UploadModal = ({ isOpen, onClose }) => {
                   key={index}
                   className="flex items-center justify-between bg-surface-hover px-3 py-2 rounded"
                 >
-                  <span className="text-text truncate">
+                  <span className="text-text truncate max-w-[75%]">
                     {file.name}
                   </span>
 
@@ -103,7 +103,7 @@ const UploadModal = ({ isOpen, onClose }) => {
         )}
 
         <button
-          className="mt-6 btn-secondary"
+          className="mt-6 btn-secondary w-full"
           onClick={onClose}
         >
           Close

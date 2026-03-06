@@ -4,7 +4,7 @@ import GradientBlobs from "./GradientBlobs";
 
 const Hero = ({ openUpload }) => {
   return (
-    <section className="relative flex justify-center py-40 overflow-hidden">
+    <section className="relative flex justify-center py-40 overflow-x-hidden">
 
       <GradientBlobs />
 

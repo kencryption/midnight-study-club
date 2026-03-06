@@ -2,6 +2,33 @@
 
 @import "tailwindcss";
 
+/* ---------- GLOBAL LAYOUT SAFETY ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-background);
+  color: var(--color-text);
+  overflow-y: auto;
+}
+
+/* ---------- THEME VARIABLES ---------- */
+
 @theme {
   --color-background: #080809;
   --color-surface: #121214;
@@ -19,12 +46,7 @@
   --font-body: "Inter", sans-serif;
 }
 
-body {
-  font-family: var(--font-body);
-  background-color: var(--color-background);
-  color: var(--color-text);
-  overflow-x: hidden;
-}
+/* ---------- COMPONENT STYLES ---------- */
 
 @layer components {
   .logo-glow {
@@ -50,7 +72,6 @@ body {
 
   .btn-primary {
     @apply px-6 py-3 rounded-full font-ui text-white transition-all duration-300 cursor-pointer;
-
     background: var(--color-accent);
   }
 
@@ -65,7 +86,6 @@ body {
 
   .btn-secondary {
     @apply px-6 py-3 rounded-full font-ui border transition-all duration-300 cursor-pointer;
-
     border-color: var(--color-accent);
     color: var(--color-text);
   }
@@ -75,22 +95,15 @@ body {
   }
 }
 
-/* Neon flicker animation */
+/* ---------- ANIMATION ---------- */
+
 @keyframes flicker {
-  0%,
-  18%,
-  22%,
-  25%,
-  53%,
-  57%,
-  100% {
+  0%,18%,22%,25%,53%,57%,100% {
     filter: drop-shadow(0 0 6px var(--color-accent-glow))
       drop-shadow(0 0 12px var(--color-accent-glow));
   }
 
-  20%,
-  24%,
-  55% {
+  20%,24%,55% {
     filter: drop-shadow(0 0 2px var(--color-accent-glow));
   }
 }

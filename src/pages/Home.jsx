@@ -1,28 +1,29 @@
 import { useState } from "react";
-import Navbar from "../components/Navbar";
+
 import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
-import Footer from "../components/Footer";
 import UploadModal from "../components/UploadModal";
 
 const Home = () => {
   const [uploadOpen, setUploadOpen] = useState(false);
 
+  const openUpload = () => setUploadOpen(true);
+  const closeUpload = () => setUploadOpen(false);
+
   return (
-    <>
-      <Navbar openUpload={() => setUploadOpen(true)} />
+    <div className="min-h-screen flex flex-col overflow-x-hidden">
 
-      <Hero openUpload={() => setUploadOpen(true)} />
-
-      <HowItWorks />
-
-      <Footer openUpload={() => setUploadOpen(true)} />
+      <main className="flex-grow">
+        <Hero openUpload={openUpload} />
+        <HowItWorks />
+      </main>
 
       <UploadModal
         isOpen={uploadOpen}
-        onClose={() => setUploadOpen(false)}
+        onClose={closeUpload}
       />
-    </>
+
+    </div>
   );
 };
 

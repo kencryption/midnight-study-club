@@ -1,23 +1,33 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import assets from "../assets/assets";
 
 const Navbar = ({ openUpload }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const scrollHome = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+  const handleHomeClick = (e) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    if (location.pathname === "/") {
+      const root = document.getElementById("root");
+      if (root) root.scrollTop = 0;
+    } else {
+      navigate("/");
+    }
   };
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+  }, [menuOpen]);
 
   return (
     <>
-      <div className="flex justify-between items-center px-4 sm:px-12 lg:px-24 xl:px-40 py-4 font-ui bg-background text-text border-b border-accent">
+      <div className="w-full flex justify-between items-center px-4 sm:px-12 lg:px-24 xl:px-40 py-4 font-ui bg-background text-text border-b border-accent">
 
         {/* Logo */}
-        <Link to="/" onClick={scrollHome}>
+        <Link to="/" onClick={handleHomeClick}>
           <img
             src={assets.logo}
             className="logo-glow w-20 sm:w-28 object-contain cursor-pointer"
@@ -29,7 +39,7 @@ const Navbar = ({ openUpload }) => {
         <div className="ml-auto mr-8 hidden sm:flex items-center gap-5 text-text font-ui sm:text-sm">
           <Link
             to="/"
-            onClick={scrollHome}
+            onClick={handleHomeClick}
             className="nav-link sm:hover:border-b sm:hover:border-accent"
           >
             Home
@@ -60,7 +70,7 @@ const Navbar = ({ openUpload }) => {
         </button>
       </div>
 
-      {/* Background overlay */}
+      {/* Overlay */}
       {menuOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-20"
@@ -70,40 +80,33 @@ const Navbar = ({ openUpload }) => {
 
       {/* Mobile Menu */}
       <div
-        className={`fixed top-0 bottom-0 right-0 w-60 bg-surface pt-20 pl-10 pr-10 flex flex-col gap-6 text-text transition-transform duration-300 z-30 shadow-xl ${
+        className={`fixed top-0 bottom-0 right-0 w-[75vw] max-w-[300px] bg-surface pt-20 px-6 flex flex-col gap-6 text-text transition-transform duration-300 z-30 shadow-xl ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Close */}
         <button
           onClick={() => setMenuOpen(false)}
-          className="absolute top-10 right-5 text-2xl text-accent"
+          className="absolute top-10 right-4 text-2xl text-accent"
         >
           ✕
         </button>
 
-        {/* Mobile Home */}
         <Link
           to="/"
+          onClick={handleHomeClick}
           className="nav-link w-full text-center"
-          onClick={() => {
-            setMenuOpen(false);
-            scrollHome();
-          }}
         >
           Home
         </Link>
 
-        {/* Mobile Resources */}
         <Link
           to="/resources"
-          className="nav-link w-full text-center"
           onClick={() => setMenuOpen(false)}
+          className="nav-link w-full text-center"
         >
           Resources
         </Link>
 
-        {/* Mobile Upload */}
         <button
           onClick={() => {
             setMenuOpen(false);
