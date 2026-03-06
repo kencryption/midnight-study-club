@@ -1,14 +1,22 @@
-import React from 'react'
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
+import { Routes, Route } from "react-router-dom";
+import CursorGlow from "./components/CursorGlow";
+import ScrollToTop from "./components/ScrollToTop";
+
+import Home from "./pages/Home";
+import Resources from "./pages/Resources";
 
 const App = () => {
   return (
-    <div>
-      <Navbar />
-      <Hero />
-    </div>
-  )
-}
+    <>
+      <CursorGlow />
+      <ScrollToTop />
 
-export default App
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/resources" element={<Resources />} />
+      </Routes>
+    </>
+  );
+};
+
+export default App;

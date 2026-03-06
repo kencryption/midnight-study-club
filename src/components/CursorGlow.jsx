@@ -15,7 +15,6 @@ const CursorGlow = () => {
     window.addEventListener("mousemove", move);
 
     const animate = () => {
-      // smooth trailing motion
       glow.current.x += (mouse.current.x - glow.current.x) * 0.08;
       glow.current.y += (mouse.current.y - glow.current.y) * 0.08;
 
@@ -36,7 +35,7 @@ const CursorGlow = () => {
     <>
       {/* Large ambient glow */}
       <div
-        className="pointer-events-none fixed z-0 w-[700px] h-[700px] rounded-full blur-[160px]"
+        className="pointer-events-none fixed z-10 w-[700px] h-[700px] rounded-full blur-[160px]"
         style={{
           left: renderPos.x - 350,
           top: renderPos.y - 350,
@@ -47,7 +46,7 @@ const CursorGlow = () => {
 
       {/* Inner brighter glow */}
       <div
-        className="pointer-events-none fixed z-0 rounded-full blur-[90px]"
+        className="pointer-events-none fixed z-10 w-[300px] h-[300px] rounded-full blur-[90px]"
         style={{
           left: renderPos.x - 150,
           top: renderPos.y - 150,
