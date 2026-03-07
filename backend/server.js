@@ -1,17 +1,52 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import compression from "compression";
+import rateLimit from "express-rate-limit";
+
 import uploadRoute from "./uploadRoute.js";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+/* ---------------- SECURITY MIDDLEWARE ---------------- */
+
+// security headers
+app.use(helmet());
+
+// gzip compression
+app.use(compression());
+
+// rate limiting (prevents spam uploads)
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: "Too many requests from this IP. Please try again later."
+});
+
+app.use(limiter);
+
+/* ---------------- CORE MIDDLEWARE ---------------- */
+
+// CORS configuration
+app.use(cors({
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "POST"],
+}));
+
+// parse JSON bodies
 app.use(express.json());
+
+/* ---------------- ROUTES ---------------- */
 
 app.use("/upload", uploadRoute);
 
-app.listen(process.env.PORT || 5000, () => {
-  console.log("Server running on port 5000");
+/* ---------------- SERVER ---------------- */
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });

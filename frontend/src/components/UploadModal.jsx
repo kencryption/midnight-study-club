@@ -6,15 +6,22 @@ const UploadModal = ({ isOpen, onClose }) => {
   const [dragging, setDragging] = useState(false);
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [status, setStatus] = useState(null);
+  const [totalProgress, setTotalProgress] = useState(0);
 
   const fileInputRef = useRef();
 
   if (!isOpen) return null;
 
   const handleFiles = (newFiles) => {
-    const fileArray = Array.from(newFiles);
-    setFiles((prev) => [...prev, ...fileArray]);
+
+    const fileArray = Array.from(newFiles).map(file => ({
+      file,
+      progress: 0,
+      status: "pending"
+    }));
+
+    setFiles(prev => [...prev, ...fileArray]);
+
   };
 
   const handleDrop = (e) => {
@@ -28,25 +35,60 @@ const UploadModal = ({ isOpen, onClose }) => {
   };
 
   const removeFile = (indexToRemove) => {
-    setFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
+    setFiles(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const updateFileProgress = (index, progress) => {
+
+    setFiles(prev => {
+
+      const updated = [...prev];
+      updated[index].progress = progress;
+
+      return updated;
+
+    });
+
+  };
+
+  const updateFileStatus = (index, status) => {
+
+    setFiles(prev => {
+
+      const updated = [...prev];
+      updated[index].status = status;
+
+      return updated;
+
+    });
+
+  };
+
+  const calculateTotalProgress = () => {
+
+    const total = files.reduce((acc, f) => acc + f.progress, 0);
+    const avg = total / files.length;
+
+    setTotalProgress(Math.round(avg));
+
   };
 
   const uploadFiles = async () => {
 
-    if (files.length === 0) {
-      setStatus({ type: "error", message: "Please select a file first." });
-      return;
-    }
+    if (files.length === 0) return;
 
     setUploading(true);
-    setStatus(null);
 
-    try {
+    for (let i = 0; i < files.length; i++) {
 
-      for (const file of files) {
+      const fileObj = files[i];
 
-        const formData = new FormData();
-        formData.append("file", file);
+      const formData = new FormData();
+      formData.append("file", fileObj.file);
+
+      try {
+
+        updateFileStatus(i, "uploading");
 
         await axios.post(
           `${import.meta.env.VITE_API_URL}/upload`,
@@ -54,27 +96,28 @@ const UploadModal = ({ isOpen, onClose }) => {
           {
             headers: {
               "Content-Type": "multipart/form-data"
+            },
+            onUploadProgress: (event) => {
+
+              const percent = Math.round(
+                (event.loaded * 100) / event.total
+              );
+
+              updateFileProgress(i, percent);
+              calculateTotalProgress();
+
             }
           }
         );
 
+        updateFileStatus(i, "done");
+
+      } catch (err) {
+
+        console.error(err);
+        updateFileStatus(i, "error");
+
       }
-
-      setStatus({
-        type: "success",
-        message: "Files uploaded successfully!"
-      });
-
-      setFiles([]);
-
-    } catch (err) {
-
-      console.error(err);
-
-      setStatus({
-        type: "error",
-        message: "Upload failed. Please try again."
-      });
 
     }
 
@@ -86,20 +129,19 @@ const UploadModal = ({ isOpen, onClose }) => {
 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 
-      {/* Overlay */}
       <div
         className="absolute inset-0 bg-black/60"
         onClick={onClose}
       />
 
-      {/* Modal */}
       <div className="relative z-10 w-full max-w-md bg-surface rounded-xl p-6 sm:p-8 text-center shadow-xl max-h-[90vh] overflow-y-auto">
 
         <h2 className="font-heading text-xl sm:text-2xl mb-6">
           Upload Resources
         </h2>
 
-        {/* Drop Area */}
+        {/* Drop Zone */}
+
         <div
           className={`border-2 border-dashed rounded-lg p-8 sm:p-12 cursor-pointer transition ${
             dragging ? "border-accent bg-surface-hover" : "border-text-muted"
@@ -132,62 +174,87 @@ const UploadModal = ({ isOpen, onClose }) => {
         </div>
 
         {/* File List */}
+
         {files.length > 0 && (
 
-          <div className="mt-6 text-left">
+          <div className="mt-6 text-left space-y-3">
 
-            <h3 className="text-sm text-text-secondary mb-2">
-              Selected Files
-            </h3>
+            {files.map((fileObj, index) => (
 
-            <ul className="space-y-2 text-sm">
+              <div key={index} className="bg-surface-hover p-3 rounded">
 
-              {files.map((file, index) => (
+                <div className="flex justify-between items-center mb-2">
 
-                <li
-                  key={index}
-                  className="flex items-center justify-between bg-surface-hover px-3 py-2 rounded"
-                >
-
-                  <span className="text-text truncate max-w-[75%]">
-                    {file.name}
+                  <span className="text-text text-sm truncate max-w-[70%]">
+                    {fileObj.file.name}
                   </span>
 
                   <button
                     onClick={() => removeFile(index)}
-                    className="text-accent hover:scale-110 transition"
+                    className="text-accent hover:scale-110"
                   >
                     ✕
                   </button>
 
-                </li>
+                </div>
 
-              ))}
+                {/* Progress bar */}
 
-            </ul>
+                <div className="w-full bg-black/20 rounded-full h-2">
+
+                  <div
+                    className="bg-accent h-2 rounded-full transition-all"
+                    style={{ width: `${fileObj.progress}%` }}
+                  />
+
+                </div>
+
+                <div className="text-xs mt-1 text-text-muted">
+
+                  {fileObj.status === "pending" && "Waiting"}
+                  {fileObj.status === "uploading" && `Uploading ${fileObj.progress}%`}
+                  {fileObj.status === "done" && "Uploaded ✓"}
+                  {fileObj.status === "error" && "Upload failed"}
+
+                </div>
+
+              </div>
+
+            ))}
 
           </div>
 
         )}
 
-        {/* Status Message */}
-        {status && (
+        {/* Total Progress */}
 
-          <div
-            className={`mt-4 text-sm ${
-              status.type === "success"
-                ? "text-green-400"
-                : "text-red-400"
-            }`}
-          >
+        {uploading && (
 
-            {status.message}
+          <div className="mt-6">
+
+            <p className="text-xs text-text-muted mb-2">
+              Total Upload Progress
+            </p>
+
+            <div className="w-full bg-black/20 rounded-full h-3">
+
+              <div
+                className="bg-accent h-3 rounded-full transition-all"
+                style={{ width: `${totalProgress}%` }}
+              />
+
+            </div>
+
+            <p className="text-xs mt-2 text-text-muted">
+              {totalProgress}%
+            </p>
 
           </div>
 
         )}
 
         {/* Upload Button */}
+
         {files.length > 0 && (
 
           <button
@@ -196,7 +263,7 @@ const UploadModal = ({ isOpen, onClose }) => {
             className="mt-6 btn-primary w-full"
           >
 
-            {uploading ? "Uploading..." : "Upload"}
+            {uploading ? "Uploading..." : "Upload Files"}
 
           </button>
 
