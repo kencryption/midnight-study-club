@@ -7,9 +7,29 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Dependencies
 node_modules
+frontend/node_modules
+backend/node_modules
+
+# Build output
 dist
 dist-ssr
+frontend/dist
+
+# Environment variables
+.env
+backend/.env
+
+# Google OAuth credentials
+backend/oauth_credentials.json
+backend/token.json
+
+# Temporary uploads
+backend/uploads/*
+!backend/uploads/.gitkeep
+
+# Local environment configs
 *.local
 
 # Editor directories and files
@@ -17,6 +37,7 @@ dist-ssr
 !.vscode/extensions.json
 .idea
 .DS_Store
+Thumbs.db
 *.suo
 *.ntvs*
 *.njsproj

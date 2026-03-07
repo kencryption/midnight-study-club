@@ -1,8 +1,12 @@
 import React, { useState, useRef } from "react";
+import axios from "axios";
 
 const UploadModal = ({ isOpen, onClose }) => {
+
   const [dragging, setDragging] = useState(false);
   const [files, setFiles] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [status, setStatus] = useState(null);
 
   const fileInputRef = useRef();
 
@@ -27,7 +31,59 @@ const UploadModal = ({ isOpen, onClose }) => {
     setFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
+  const uploadFiles = async () => {
+
+    if (files.length === 0) {
+      setStatus({ type: "error", message: "Please select a file first." });
+      return;
+    }
+
+    setUploading(true);
+    setStatus(null);
+
+    try {
+
+      for (const file of files) {
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data"
+            }
+          }
+        );
+
+      }
+
+      setStatus({
+        type: "success",
+        message: "Files uploaded successfully!"
+      });
+
+      setFiles([]);
+
+    } catch (err) {
+
+      console.error(err);
+
+      setStatus({
+        type: "error",
+        message: "Upload failed. Please try again."
+      });
+
+    }
+
+    setUploading(false);
+
+  };
+
   return (
+
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
 
       {/* Overlay */}
@@ -56,6 +112,7 @@ const UploadModal = ({ isOpen, onClose }) => {
           onDragLeave={() => setDragging(false)}
           onDrop={handleDrop}
         >
+
           <p className="text-text-secondary text-sm sm:text-base">
             Drag & drop files here
           </p>
@@ -71,21 +128,27 @@ const UploadModal = ({ isOpen, onClose }) => {
             className="hidden"
             onChange={handleBrowse}
           />
+
         </div>
 
         {/* File List */}
         {files.length > 0 && (
+
           <div className="mt-6 text-left">
+
             <h3 className="text-sm text-text-secondary mb-2">
               Selected Files
             </h3>
 
             <ul className="space-y-2 text-sm">
+
               {files.map((file, index) => (
+
                 <li
                   key={index}
                   className="flex items-center justify-between bg-surface-hover px-3 py-2 rounded"
                 >
+
                   <span className="text-text truncate max-w-[75%]">
                     {file.name}
                   </span>
@@ -96,22 +159,62 @@ const UploadModal = ({ isOpen, onClose }) => {
                   >
                     ✕
                   </button>
+
                 </li>
+
               ))}
+
             </ul>
+
           </div>
+
+        )}
+
+        {/* Status Message */}
+        {status && (
+
+          <div
+            className={`mt-4 text-sm ${
+              status.type === "success"
+                ? "text-green-400"
+                : "text-red-400"
+            }`}
+          >
+
+            {status.message}
+
+          </div>
+
+        )}
+
+        {/* Upload Button */}
+        {files.length > 0 && (
+
+          <button
+            onClick={uploadFiles}
+            disabled={uploading}
+            className="mt-6 btn-primary w-full"
+          >
+
+            {uploading ? "Uploading..." : "Upload"}
+
+          </button>
+
         )}
 
         <button
-          className="mt-6 btn-secondary w-full"
+          className="mt-4 btn-secondary w-full"
           onClick={onClose}
         >
           Close
         </button>
 
       </div>
+
     </div>
+
   );
+
 };
 
 export default UploadModal;

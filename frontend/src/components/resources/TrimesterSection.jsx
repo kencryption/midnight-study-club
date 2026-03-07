@@ -31,12 +31,14 @@ const TrimesterSection = ({ trimester }) => {
 
             <div className="grid md:grid-cols-3 gap-4">
 
-              {trimester.subjects.map((subject) => (
-                <SubjectCard
-                  key={subject.name}
-                  subject={subject}
-                />
-              ))}
+              {[...trimester.subjects]
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .map((subject) => (
+                  <SubjectCard
+                    key={subject.name}
+                    subject={subject}
+                  />
+                ))}
 
             </div>
 
