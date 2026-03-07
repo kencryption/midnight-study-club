@@ -21,7 +21,7 @@ app.use(compression());
 
 // rate limiting (prevents spam uploads)
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100,
   message: "Too many requests from this IP. Please try again later."
 });
@@ -30,14 +30,20 @@ app.use(limiter);
 
 /* ---------------- CORE MIDDLEWARE ---------------- */
 
-// CORS configuration
+// allow frontend requests
 app.use(cors({
   origin: ["http://localhost:5173"],
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST"]
 }));
 
-// parse JSON bodies
+// parse JSON
 app.use(express.json());
+
+/* ---------------- TEST ROUTE ---------------- */
+
+app.get("/", (req, res) => {
+  res.send("Midnight Study Club backend is running");
+});
 
 /* ---------------- ROUTES ---------------- */
 
