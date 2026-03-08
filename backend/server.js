@@ -13,13 +13,9 @@ const app = express();
 
 /* ---------------- SECURITY MIDDLEWARE ---------------- */
 
-// security headers
 app.use(helmet());
-
-// gzip compression
 app.use(compression());
 
-// rate limiting (prevents spam uploads)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -30,15 +26,13 @@ app.use(limiter);
 
 /* ---------------- CORE MIDDLEWARE ---------------- */
 
-// allow frontend requests (both local + deployed frontend)
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://midnight-study-club.vercel.app"
-];
-
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (
+      !origin ||
+      origin.includes("localhost") ||
+      origin.includes(".vercel.app")
+    ) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS"));
@@ -48,10 +42,8 @@ app.use(cors({
   credentials: true
 }));
 
-// handle preflight requests
 app.options("*", cors());
 
-// parse JSON
 app.use(express.json());
 
 /* ---------------- TEST ROUTE ---------------- */
