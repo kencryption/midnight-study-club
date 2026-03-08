@@ -30,10 +30,14 @@ app.use(limiter);
 
 /* ---------------- CORE MIDDLEWARE ---------------- */
 
-// allow frontend requests
+// allow frontend requests (both local + deployed frontend)
 app.use(cors({
-  origin: ["http://localhost:5173"],
-  methods: ["GET", "POST"]
+  origin: [
+    "http://localhost:5173",
+    "https://midnight-study-club.vercel.app"
+  ],
+  methods: ["GET", "POST"],
+  credentials: true
 }));
 
 // parse JSON
