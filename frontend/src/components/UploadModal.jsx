@@ -73,6 +73,16 @@ const UploadModal = ({ isOpen, onClose }) => {
 
   };
 
+  const resetUpload = () => {
+    setFiles([]);
+    setTotalProgress(0);
+    setUploading(false);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   const uploadFiles = async () => {
 
     if (files.length === 0) return;
@@ -121,7 +131,10 @@ const UploadModal = ({ isOpen, onClose }) => {
 
     }
 
-    setUploading(false);
+    // allow users to briefly see "Uploaded ✓"
+    setTimeout(() => {
+      resetUpload();
+    }, 800);
 
   };
 
