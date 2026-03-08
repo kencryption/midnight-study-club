@@ -31,14 +31,25 @@ app.use(limiter);
 /* ---------------- CORE MIDDLEWARE ---------------- */
 
 // allow frontend requests (both local + deployed frontend)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://midnight-study-club.vercel.app"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://midnight-study-club.vercel.app"
-  ],
-  methods: ["GET", "POST"],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "OPTIONS"],
   credentials: true
 }));
+
+// handle preflight requests
+app.options("*", cors());
 
 // parse JSON
 app.use(express.json());
